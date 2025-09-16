@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
-import { getCalls, searchCalls, type CallFilters, type CallSearchResponse } from '../../services/callsApi';
+import { getCalls, searchCalls, type CallFilters, type CallSearchResponse } from '../../services/callsService';
 import { type Call } from '../../types';
 import CallViewModal from '../../components/CallViewModal';
 import CallEditModal from '../../components/CallEditModal';

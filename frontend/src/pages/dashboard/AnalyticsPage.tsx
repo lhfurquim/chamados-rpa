@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '../../components/ui/chart';
-import { getCallStats, getCalls, getTimelineStats } from '../../services/callsApi';
+import { getCallStats, getCalls, getTimelineStats } from '../../services/callsService';
 import { type CallStats, type Call, type TimelineStats } from '../../types';
 import { 
   BarChart, 

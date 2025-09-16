@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { dpApiService } from '../services/dpApi';
-import { getRobotsByCell } from '../services/robotsApi';
+import { dpApiService } from '../services/dpService';
+import { getRobotsByCell } from '../services/robotsService';
 import type { DpCell, DpClient, DpService, Robot } from '../types';
 import type { SearchableSelectOption } from '../components/ui/searchable-select';
 

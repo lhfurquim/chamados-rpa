@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { updateRobot } from '../services/robotsApi';
+import { updateRobot } from '../services/robotsService';
 import { type Robot, type UpdateRobotRequest, type ClientType, type ExecutionType, type RobotStatus } from '../types';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
@@ -102,7 +102,7 @@ export default function RobotEditModal({ isOpen, onClose, robot, onRobotUpdated 
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-xl">
+      <DialogContent className="sm:max-w-xl max-h-[70vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Editar Robô</DialogTitle>
           <DialogDescription>

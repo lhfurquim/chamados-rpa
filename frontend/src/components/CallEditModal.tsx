@@ -13,8 +13,8 @@ import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { ScrollArea } from './ui/scroll-area';
-import { getCallById, updateCall } from '../services/callsApi';
-import { getRobotsByCell } from '../services/robotsApi';
+import { getCallById, updateCall } from '../services/callsService';
+import { getRobotsByCell } from '../services/robotsService';
 import { type Call, type Robot } from '../types';
 import { useToast } from '../hooks/use-toast';
 import { Loader2, AlertCircle, Save, X } from 'lucide-react';
@@ -224,7 +224,7 @@ export default function CallEditModal({ callId, isOpen, onClose, onSuccess }: Ca
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
+      <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Save className="h-5 w-5" />
@@ -235,7 +235,7 @@ export default function CallEditModal({ callId, isOpen, onClose, onSuccess }: Ca
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 max-h-[calc(90vh-200px)]">
+        <ScrollArea className="flex-1 max-h-[calc(80vh-180px)] overflow-y-auto">
           {loading ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="h-6 w-6 animate-spin mr-2" />

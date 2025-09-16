@@ -1,4 +1,4 @@
-import { api } from './api';
+import { api } from '../lib/api';
 import type { DpCell, DpClient, DpService } from '../types';
 
 class DpApiService {

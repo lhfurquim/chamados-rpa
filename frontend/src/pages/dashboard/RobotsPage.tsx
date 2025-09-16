@@ -4,7 +4,7 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { Badge } from '../../components/ui/badge';
-import { getRobots, searchRobots, deleteRobot, getUniqueValues } from '../../services/robotsApi';
+import { getRobots, searchRobots, deleteRobot, getUniqueValues } from '../../services/robotsService';
 import { type Robot, type ClientType, type ExecutionType, type RobotStatus, type RobotFilters } from '../../types';
 import { Search, Filter, Bot, Plus, Edit, Trash2, Server, Building2, Loader2, Eye } from 'lucide-react';
 import { useToast } from '../../hooks/use-toast';
@@ -76,15 +76,22 @@ export default function RobotsPage() {
         technology: technologyFilter !== 'all' ? technologyFilter : undefined,
       };
 
+      console.log('🎯 Applied filters:', filters);
       const hasFilters = Object.values(filters).some(value => value !== undefined);
+      console.log('🎯 Has filters?', hasFilters);
       
       let robotsData: Robot[];
       if (!hasFilters) {
+        console.log('🎯 Loading all robots...');
         robotsData = await getRobots();
       } else {
+        console.log('🎯 Searching with filters...');
         robotsData = await searchRobots(filters);
       }
 
+      console.log('🎯 Final robots data:', robotsData);
+      console.log('🎯 Number of robots to display:', robotsData?.length || 0);
+      
       setRobots(robotsData);
       setUniqueValues(getUniqueValues(robotsData));
     } catch (err) {
@@ -254,7 +261,7 @@ export default function RobotsPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todas as células</SelectItem>
-                {uniqueValues.cells.map((cell) => (
+                {uniqueValues.cells.filter(cell => cell && cell.trim() !== '').map((cell) => (
                   <SelectItem key={cell} value={cell}>{cell}</SelectItem>
                 ))}
               </SelectContent>

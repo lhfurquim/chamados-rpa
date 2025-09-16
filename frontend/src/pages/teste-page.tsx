@@ -1,4 +1,4 @@
-import { createCard } from "../services/plannerApi";
+import { createCard } from "../services/plannerService";
 
 export default function TestePage() {
 

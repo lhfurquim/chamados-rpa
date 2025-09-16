@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { useMsal } from '@azure/msal-react';
 import { InteractionRequiredAuthError, InteractionStatus, type AccountInfo } from '@azure/msal-browser';
 import { loginRequest } from '../auth/sso';
-import { createUserFromSSO } from '../services/authApi';
+import { createUserFromSSO } from '../services/authService';
 import { isAdminUser } from '../config/adminUsers';
 import type { FormRespondent } from '../types';
-import { getUserProfile, type GraphUserProfile } from '../services/graph-api';
+import { getUserProfile, type GraphUserProfile } from '../lib/graph-api';
 
 interface MsalAuthState {
   user: FormRespondent | null;

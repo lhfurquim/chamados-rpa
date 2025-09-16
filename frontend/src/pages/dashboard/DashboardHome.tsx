@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
-import { getDashboardData } from '../../services/dashboardApi';
+import { getDashboardData } from '../../services/dashboardService';
 import { type DashboardData } from '../../types';
 import { 
   Users, 

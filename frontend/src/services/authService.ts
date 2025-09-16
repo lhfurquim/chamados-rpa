@@ -1,4 +1,4 @@
-import { api } from './api';
+import { api } from '../lib/api';
 import type { FormRespondent, LoginCredentials } from '../types';
 
 export const login = async (credentials: LoginCredentials): Promise<{ user: FormRespondent; token: string }> => {

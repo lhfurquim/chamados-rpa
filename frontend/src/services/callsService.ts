@@ -1,11 +1,11 @@
 import { type AxiosResponse } from 'axios';
-import { api, retryRequest } from './api';
+import { api, retryRequest } from '../lib/api';
 import { 
   transformMelhoriaForSubmission,
   transformSustentacaoForSubmission,
   transformNovoProjetoForSubmission 
 } from '../utils/dataMappers';
-import { transformCallsFromAPI, transformCallFromAPI, transformStatsFromAPI } from './apiTransformers';
+import { transformCallsFromAPI, transformCallFromAPI, transformStatsFromAPI } from '../lib/apiTransformers';
 import type {  
   Call, 
   CallStats, 

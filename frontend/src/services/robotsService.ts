@@ -1,10 +1,34 @@
 import type { Robot, CreateRobotRequest, UpdateRobotRequest, RobotFilters, ClientType, ExecutionType, RobotStatus } from '../types';
-import { api, retryRequest } from './api';
+import { api, retryRequest } from '../lib/api';
+
+// Transform backend data to frontend format
+const transformRobotFromAPI = (apiRobot: any): Robot => {
+  return {
+    id: apiRobot.id,
+    name: apiRobot.name || '',
+    cell: apiRobot.cell || '',
+    technology: apiRobot.technology || '',
+    executionType: apiRobot.executionType || apiRobot.execution_type || 'ATTENDED',
+    client: apiRobot.client || 'STEFANINI',
+    status: apiRobot.status || 'ACTIVE'
+  };
+};
 
 export const getRobots = async (): Promise<Robot[]> => {
   return retryRequest(async () => {
-    const response = await api.get<Robot[]>('/robots');
-    return response.data;
+    console.log('🤖 Fetching robots from API...');
+    const response = await api.get<any[]>('/robots');
+    console.log('🤖 Raw API Response:', response.data);
+    console.log('🤖 Number of robots received:', response.data?.length || 0);
+    if (response.data?.length > 0) {
+      console.log('🤖 First robot structure:', response.data[0]);
+    }
+    
+    // Transform and validate data
+    const transformedRobots = response.data?.map(transformRobotFromAPI) || [];
+    console.log('🤖 Transformed robots:', transformedRobots);
+    
+    return transformedRobots;
   });
 };
 
@@ -96,8 +120,12 @@ export const searchRobots = async (filters: RobotFilters): Promise<Robot[]> => {
 };
 
 export const getUniqueValues = (robots: Robot[]) => {
-  const uniqueCells = Array.from(new Set(robots.map(robot => robot.cell))).sort();
-  const uniqueTechnologies = Array.from(new Set(robots.map(robot => robot.technology))).sort();
+  const uniqueCells = Array.from(new Set(robots.map(robot => robot.cell)))
+    .filter(cell => cell && cell.trim() !== '')
+    .sort();
+  const uniqueTechnologies = Array.from(new Set(robots.map(robot => robot.technology)))
+    .filter(tech => tech && tech.trim() !== '')
+    .sort();
   
   return {
     cells: uniqueCells,

@@ -247,6 +247,7 @@ export interface Robot {
   cell: string;
   technology: string;
   executionType: ExecutionType;
+  execution_type?: ExecutionType; // Backend compatibility
   client: ClientType;
   status: RobotStatus;
 }

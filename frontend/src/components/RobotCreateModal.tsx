@@ -4,10 +4,12 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { createRobot } from '../services/robotsApi';
+import { SearchableSelect } from './ui/searchable-select';
+import { createRobot } from '../services/robotsService';
 import { type Robot, type CreateRobotRequest, type ClientType, type ExecutionType, type RobotStatus } from '../types';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import { useCascadingSelects } from '../hooks/useCascadingSelects';
 
 interface RobotCreateModalProps {
   isOpen: boolean;
@@ -28,13 +30,25 @@ export default function RobotCreateModal({ isOpen, onClose, onRobotCreated }: Ro
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
+  // Configure cascading selects hook for cells only
+  const cascadingSelects = useCascadingSelects({
+    onCellChange: (cellId) => {
+      setFormData(prev => ({ ...prev, cell: cellId || '' }));
+      // Clear cell error when a cell is selected
+      if (cellId && errors.cell) {
+        setErrors(prev => ({ ...prev, cell: '' }));
+      }
+    }
+  });
+
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.name.trim()) {
       newErrors.name = 'Nome é obrigatório';
     }
-    if (!formData.cell.trim()) {
+    // Use the selected cell from cascading selects
+    if (!cascadingSelects.selectedCell) {
       newErrors.cell = 'Célula é obrigatória';
     }
     if (!formData.technology.trim()) {
@@ -54,7 +68,12 @@ export default function RobotCreateModal({ isOpen, onClose, onRobotCreated }: Ro
 
     try {
       setLoading(true);
-      const newRobot = await createRobot(formData);
+      // Ensure cell is synced from cascading select
+      const dataToSubmit = {
+        ...formData,
+        cell: cascadingSelects.selectedCell || formData.cell
+      };
+      const newRobot = await createRobot(dataToSubmit);
       onRobotCreated(newRobot);
       handleClose();
     } catch (error) {
@@ -79,6 +98,8 @@ export default function RobotCreateModal({ isOpen, onClose, onRobotCreated }: Ro
       status: 'ACTIVE'
     });
     setErrors({});
+    // Reset cascading selections
+    cascadingSelects.resetSelections();
     onClose();
   };
 
@@ -91,7 +112,7 @@ export default function RobotCreateModal({ isOpen, onClose, onRobotCreated }: Ro
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-xl">
+      <DialogContent className="sm:max-w-xl max-h-[70vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Criar Novo Robô</DialogTitle>
           <DialogDescription>
@@ -114,14 +135,25 @@ export default function RobotCreateModal({ isOpen, onClose, onRobotCreated }: Ro
 
           <div className="space-y-2">
             <Label htmlFor="cell">Célula *</Label>
-            <Input
-              id="cell"
-              value={formData.cell}
-              onChange={(e) => handleInputChange('cell', e.target.value)}
-              placeholder="Digite a célula"
-              className={errors.cell ? 'border-red-500' : ''}
-            />
+            {cascadingSelects.cellsLoading ? (
+              <div className="flex items-center space-x-2 p-3 border rounded-md">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span className="text-sm text-muted-foreground">Carregando células...</span>
+              </div>
+            ) : (
+              <SearchableSelect
+                options={cascadingSelects.cells}
+                value={cascadingSelects.selectedCell}
+                onValueChange={cascadingSelects.onCellChange}
+                placeholder="Pesquise ou selecione a célula"
+                emptyMessage="Nenhuma célula encontrada"
+                className={errors.cell ? 'border-red-500' : ''}
+              />
+            )}
             {errors.cell && <p className="text-sm text-red-600">{errors.cell}</p>}
+            {cascadingSelects.error && (
+              <p className="text-sm text-red-600">Erro ao carregar células: {cascadingSelects.error}</p>
+            )}
           </div>
 
           <div className="space-y-2">

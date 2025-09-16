@@ -1,5 +1,5 @@
 import type { ServiceType, FormData } from "../types";
-import { plannerApi } from "./plannerAutomation";
+import { plannerApi } from "../lib/plannerAutomation";
 
 interface PlannerFile {
   name: string;

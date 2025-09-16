@@ -10,7 +10,7 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { ScrollArea } from './ui/scroll-area';
 import { Separator } from './ui/separator';
-import { getCallById } from '../services/callsApi';
+import { getCallById } from '../services/callsService';
 import { type Call } from '../types';
 import { 
   User, 
@@ -118,7 +118,7 @@ export default function CallViewModal({ callId, isOpen, onClose }: CallViewModal
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
+      <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
@@ -129,7 +129,7 @@ export default function CallViewModal({ callId, isOpen, onClose }: CallViewModal
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 max-h-[calc(90vh-140px)]">
+        <ScrollArea className="flex-1 max-h-[calc(80vh-140px)] overflow-y-auto">
           {loading ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="h-6 w-6 animate-spin mr-2" />
