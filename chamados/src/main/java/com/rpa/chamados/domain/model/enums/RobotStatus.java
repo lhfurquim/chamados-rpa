@@ -1,6 +1,6 @@
 package com.rpa.chamados.domain.model.enums;
 
-public enum Status {
+public enum RobotStatus {
 
     ACTIVE,
     INACTIVE,

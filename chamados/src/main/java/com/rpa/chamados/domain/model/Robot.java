@@ -2,7 +2,7 @@ package com.rpa.chamados.domain.model;
 
 import com.rpa.chamados.domain.model.enums.Client;
 import com.rpa.chamados.domain.model.enums.ExecutionType;
-import com.rpa.chamados.domain.model.enums.Status;
+import com.rpa.chamados.domain.model.enums.RobotStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,6 +31,6 @@ public class Robot {
     private Client client;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private RobotStatus robotStatus;
 
 }

@@ -6,7 +6,7 @@ import com.rpa.chamados.controller.dto.UpdateRobotRequest;
 import com.rpa.chamados.domain.model.Robot;
 import com.rpa.chamados.domain.model.enums.Client;
 import com.rpa.chamados.domain.model.enums.ExecutionType;
-import com.rpa.chamados.domain.model.enums.Status;
+import com.rpa.chamados.domain.model.enums.RobotStatus;
 import com.rpa.chamados.exception.InvalidRobotUpdateException;
 import com.rpa.chamados.exception.RobotNotFoundException;
 import com.rpa.chamados.repository.RobotRepository;
@@ -35,7 +35,7 @@ public class RobotServiceImpl implements RobotService {
                 .technology(request.technology())
                 .executionType(request.executionType())
                 .client(request.client())
-                .status(request.status())
+                .robotStatus(request.robotStatus())
                 .build();
 
 
@@ -77,8 +77,8 @@ public class RobotServiceImpl implements RobotService {
             robotFound.get().setClient(request.client());
         }
 
-        if(request.status() != null) {
-            robotFound.get().setStatus(request.status());
+        if(request.robotStatus() != null) {
+            robotFound.get().setRobotStatus(request.robotStatus());
         }
 
         repository.save(robotFound.get());
@@ -136,9 +136,9 @@ public class RobotServiceImpl implements RobotService {
     }
 
     @Override
-    public List<RobotDto> findByStatus(Status status) {
+    public List<RobotDto> findByStatus(RobotStatus robotStatus) {
         return this.repository
-                .findRobotByStatus(status)
+                .findRobotByRobotStatus(robotStatus)
                 .stream()
                 .map(this::mapToDto)
                 .toList();
@@ -151,7 +151,7 @@ public class RobotServiceImpl implements RobotService {
                 robot.getTechnology(),
                 robot.getExecutionType(),
                 robot.getClient(),
-                robot.getStatus()
+                robot.getRobotStatus()
         );
     }
 

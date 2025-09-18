@@ -76,16 +76,12 @@ export default function RobotsPage() {
         technology: technologyFilter !== 'all' ? technologyFilter : undefined,
       };
 
-      console.log('🎯 Applied filters:', filters);
       const hasFilters = Object.values(filters).some(value => value !== undefined);
-      console.log('🎯 Has filters?', hasFilters);
       
       let robotsData: Robot[];
       if (!hasFilters) {
-        console.log('🎯 Loading all robots...');
         robotsData = await getRobots();
       } else {
-        console.log('🎯 Searching with filters...');
         robotsData = await searchRobots(filters);
       }
 

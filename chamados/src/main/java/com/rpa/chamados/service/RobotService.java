@@ -6,7 +6,7 @@ import com.rpa.chamados.controller.dto.UpdateRobotRequest;
 import com.rpa.chamados.domain.model.Robot;
 import com.rpa.chamados.domain.model.enums.Client;
 import com.rpa.chamados.domain.model.enums.ExecutionType;
-import com.rpa.chamados.domain.model.enums.Status;
+import com.rpa.chamados.domain.model.enums.RobotStatus;
 
 import java.util.List;
 
@@ -19,6 +19,6 @@ public interface RobotService {
     List<RobotDto> findByCell(String cell);
     List<RobotDto> findByClient(Client client);
     List<RobotDto> findByExecutionType(ExecutionType type);
-    List<RobotDto> findByStatus(Status status);
+    List<RobotDto> findByStatus(RobotStatus robotStatus);
 
 }

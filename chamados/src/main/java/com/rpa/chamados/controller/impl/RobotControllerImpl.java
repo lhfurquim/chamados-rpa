@@ -6,7 +6,7 @@ import com.rpa.chamados.controller.dto.UpdateRobotRequest;
 import com.rpa.chamados.domain.model.Robot;
 import com.rpa.chamados.domain.model.enums.Client;
 import com.rpa.chamados.domain.model.enums.ExecutionType;
-import com.rpa.chamados.domain.model.enums.Status;
+import com.rpa.chamados.domain.model.enums.RobotStatus;
 import com.rpa.chamados.service.RobotService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -80,9 +80,9 @@ public class RobotControllerImpl {
 
     @GetMapping("/status/{status}")
     public ResponseEntity<List<RobotDto>> getByStatus(
-            @PathVariable Status status
+            @PathVariable RobotStatus robotStatus
     ) {
-        List<RobotDto> robots = service.findByStatus(status);
+        List<RobotDto> robots = service.findByStatus(robotStatus);
 
         return ResponseEntity.ok(robots);
     }
