@@ -19,11 +19,9 @@ public class Tracking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "demand_id")
     private Demand demand;
-
-    @ManyToOne
-    private Robot robot;
 
     private Double hours;
 
@@ -36,6 +34,6 @@ public class Tracking {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "submitter_id")
-    private SubmitterInfo submitter;
+    private User submitter;
 
 }

@@ -51,7 +51,7 @@ public class RequestServiceImpl implements RequestService {
         log.info("Request de melhoria: {}", request);
 
         try {
-            SubmitterInfo persistedSubmitter = validateTokenAndReturnSubmitter(token);
+            User persistedSubmitter = validateTokenAndReturnSubmitter(token);
             SubmitterInfoDto submitterDto = convertToDto(persistedSubmitter);
             
             MelhoriaRequest entity = mapToEntity(request, submitterDto);
@@ -74,7 +74,7 @@ public class RequestServiceImpl implements RequestService {
         log.debug("Creating Sustentacao request for description: {}", request.description());
         
         try {
-            SubmitterInfo persistedSubmitter = validateTokenAndReturnSubmitter(token);
+            User persistedSubmitter = validateTokenAndReturnSubmitter(token);
             SubmitterInfoDto submitterDto = convertToDto(persistedSubmitter);
             
             SustentacaoRequest entity = mapToEntity(request, submitterDto);
@@ -97,7 +97,7 @@ public class RequestServiceImpl implements RequestService {
         log.debug("Creating Novo Projeto request for description: {}", request.description());
         
         try {
-            SubmitterInfo persistedSubmitter = validateTokenAndReturnSubmitter(token);
+            User persistedSubmitter = validateTokenAndReturnSubmitter(token);
             SubmitterInfoDto submitterDto = convertToDto(persistedSubmitter);
             
             NovoProjetoRequest entity = mapToEntity(request, submitterDto);
@@ -153,9 +153,9 @@ public class RequestServiceImpl implements RequestService {
                 ));
         
         Map<String, Integer> byDepartment = allRequests.stream()
-                .filter(r -> r.getSubmitterInfo() != null && r.getSubmitterInfo().getDepartment() != null)
+                .filter(r -> r.getUser() != null && r.getUser().getDepartment() != null)
                 .collect(Collectors.groupingBy(
-                    r -> r.getSubmitterInfo().getDepartment(),
+                    r -> r.getUser().getDepartment(),
                     Collectors.collectingAndThen(Collectors.counting(), Math::toIntExact)
                 ));
 
@@ -239,9 +239,9 @@ public class RequestServiceImpl implements RequestService {
         log.debug("Calculating department statistics");
         List<Request> allRequests = repository.findAll();
         return allRequests.stream()
-                .filter(r -> r.getSubmitterInfo() != null && r.getSubmitterInfo().getDepartment() != null)
+                .filter(r -> r.getUser() != null && r.getUser().getDepartment() != null)
                 .collect(Collectors.groupingBy(
-                    r -> r.getSubmitterInfo().getDepartment(),
+                    r -> r.getUser().getDepartment(),
                     Collectors.counting()
                 ));
     }
@@ -269,8 +269,8 @@ public class RequestServiceImpl implements RequestService {
         List<Request> allRequests = repository.findAll();
         
         Map<String, List<Request>> requestsByUser = allRequests.stream()
-                .filter(r -> r.getSubmitterInfo() != null)
-                .collect(Collectors.groupingBy(r -> r.getSubmitterInfo().getId().toString()));
+                .filter(r -> r.getUser() != null)
+                .collect(Collectors.groupingBy(r -> r.getUser().getId().toString()));
         
         List<UserTicketMetricsDto> metrics = new ArrayList<>();
         
@@ -279,7 +279,7 @@ public class RequestServiceImpl implements RequestService {
             List<Request> userRequests = entry.getValue();
             
             if (!userRequests.isEmpty()) {
-                SubmitterInfo userInfo = userRequests.getFirst().getSubmitterInfo();
+                User userInfo = userRequests.getFirst().getUser();
                 
                 Map<String, Long> ticketsByServiceType = userRequests.stream()
                         .collect(Collectors.groupingBy(
@@ -322,7 +322,7 @@ public class RequestServiceImpl implements RequestService {
 
         entity.setDescription(dto.description());
         entity.setSubmittedBy(submitterDto.id());
-        entity.setSubmitterInfo(convertToEntity(submitterDto));
+        entity.setUser(convertToEntity(submitterDto));
 
         entity.setRoi(dto.roi());
         entity.setCelula(dto.celula());
@@ -359,7 +359,7 @@ public class RequestServiceImpl implements RequestService {
 
         entity.setDescription(dto.description());
         entity.setSubmittedBy(submitterDto.id());
-        entity.setSubmitterInfo(convertToEntity(submitterDto));
+        entity.setUser(convertToEntity(submitterDto));
         entity.setRobot(dto.robot());
         entity.setEmpresa(dto.empresa());
         entity.setTecnologiaAutomacao(dto.tecnologiaAutomacao());
@@ -382,7 +382,7 @@ public class RequestServiceImpl implements RequestService {
 
         entity.setDescription(dto.description());
         entity.setSubmittedBy(submitterDto.id());
-        entity.setSubmitterInfo(convertToEntity(submitterDto));
+        entity.setUser(convertToEntity(submitterDto));
         entity.setRobot(dto.robotSelecionado());
         entity.setEmpresa(dto.empresa());
         entity.setTecnologiaAutomacao(dto.tecnologiaAutomacao());
@@ -399,42 +399,42 @@ public class RequestServiceImpl implements RequestService {
         return entity;
     }
 
-    private SubmitterInfoDto convertToDto(SubmitterInfo submitterInfo) {
+    private SubmitterInfoDto convertToDto(User user) {
         return new SubmitterInfoDto(
-            submitterInfo.getId().toString(),
-            submitterInfo.getName(),
-            submitterInfo.getEmail(),
-            submitterInfo.getPhone(),
-            submitterInfo.getDepartment(),
-            submitterInfo.getCompany(),
-            submitterInfo.getRole(),
-            submitterInfo.getIsActive(),
-            submitterInfo.getRequestsSubmitted(),
-            submitterInfo.getLastActivity(),
-            submitterInfo.getJoinedAt()
+            user.getId().toString(),
+            user.getName(),
+            user.getEmail(),
+            user.getPhone(),
+            user.getDepartment(),
+            user.getCompany(),
+            user.getRole(),
+            user.getIsActive(),
+            user.getRequestsSubmitted(),
+            user.getLastActivity(),
+            user.getJoinedAt()
         );
     }
 
-    private SubmitterInfo convertToEntity(SubmitterInfoDto submitterDto) {
-        SubmitterInfo submitterInfo = new SubmitterInfo();
-        submitterInfo.setId(UUID.fromString(submitterDto.id()));
-        submitterInfo.setName(submitterDto.name());
-        submitterInfo.setEmail(submitterDto.email());
-        submitterInfo.setPhone(submitterDto.phone());
-        submitterInfo.setDepartment(submitterDto.department());
-        submitterInfo.setCompany(submitterDto.company());
-        submitterInfo.setRole(submitterDto.role());
-        submitterInfo.setIsActive(submitterDto.isActive());
-        submitterInfo.setRequestsSubmitted(submitterDto.requestsSubmitted());
-        submitterInfo.setLastActivity(submitterDto.lastActivity());
-        submitterInfo.setJoinedAt(submitterDto.joinedAt());
-        return submitterInfo;
+    private User convertToEntity(SubmitterInfoDto submitterDto) {
+        User user = new User();
+        user.setId(UUID.fromString(submitterDto.id()));
+        user.setName(submitterDto.name());
+        user.setEmail(submitterDto.email());
+        user.setPhone(submitterDto.phone());
+        user.setDepartment(submitterDto.department());
+        user.setCompany(submitterDto.company());
+        user.setRole(submitterDto.role());
+        user.setIsActive(submitterDto.isActive());
+        user.setRequestsSubmitted(submitterDto.requestsSubmitted());
+        user.setLastActivity(submitterDto.lastActivity());
+        user.setJoinedAt(submitterDto.joinedAt());
+        return user;
     }
 
     private RequestDto mapToDto(Request entity) {
         SubmitterInfoDto submitterDto = null;
-        if (entity.getSubmitterInfo() != null) {
-            SubmitterInfo submitter = entity.getSubmitterInfo();
+        if (entity.getUser() != null) {
+            User submitter = entity.getUser();
             submitterDto = new SubmitterInfoDto(
                 submitter.getId().toString(),
                 submitter.getName(),
@@ -869,7 +869,7 @@ public class RequestServiceImpl implements RequestService {
         );
     }
 
-    private SubmitterInfo validateTokenAndReturnSubmitter(String token) {
+    private User validateTokenAndReturnSubmitter(String token) {
         if (token == null || !token.startsWith("Bearer ")) {
             log.error("No valid authorization header found");
             throw new InvalidJwtTokenException("Token de autenticação é obrigatório.");
@@ -882,20 +882,20 @@ public class RequestServiceImpl implements RequestService {
             SubmitterInfoDto persistedSubmitter = authenticationService.ensureUserExists(extractedToken);
             log.debug("Validated and retrieved user from token: {}", persistedSubmitter.email());
 
-            SubmitterInfo submitterInfo = new SubmitterInfo();
-            submitterInfo.setId(UUID.fromString(persistedSubmitter.id()));
-            submitterInfo.setName(persistedSubmitter.name());
-            submitterInfo.setEmail(persistedSubmitter.email());
-            submitterInfo.setPhone(persistedSubmitter.phone());
-            submitterInfo.setDepartment(persistedSubmitter.department());
-            submitterInfo.setCompany(persistedSubmitter.company());
-            submitterInfo.setRole(persistedSubmitter.role());
-            submitterInfo.setIsActive(persistedSubmitter.isActive());
-            submitterInfo.setRequestsSubmitted(persistedSubmitter.requestsSubmitted());
-            submitterInfo.setLastActivity(persistedSubmitter.lastActivity());
-            submitterInfo.setJoinedAt(persistedSubmitter.joinedAt());
+            User user = new User();
+            user.setId(UUID.fromString(persistedSubmitter.id()));
+            user.setName(persistedSubmitter.name());
+            user.setEmail(persistedSubmitter.email());
+            user.setPhone(persistedSubmitter.phone());
+            user.setDepartment(persistedSubmitter.department());
+            user.setCompany(persistedSubmitter.company());
+            user.setRole(persistedSubmitter.role());
+            user.setIsActive(persistedSubmitter.isActive());
+            user.setRequestsSubmitted(persistedSubmitter.requestsSubmitted());
+            user.setLastActivity(persistedSubmitter.lastActivity());
+            user.setJoinedAt(persistedSubmitter.joinedAt());
 
-            return submitterInfo;
+            return user;
         } catch (Exception e) {
             log.error("Failed to validate token and ensure user exists: {}", e.getMessage());
             throw new InvalidJwtTokenException("Não foi possível validar o usuário. Token inválido ou expirado." + e.getMessage());

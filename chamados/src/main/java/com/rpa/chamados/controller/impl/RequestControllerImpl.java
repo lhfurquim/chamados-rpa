@@ -1,6 +1,8 @@
 package com.rpa.chamados.controller.impl;
 
 import com.rpa.chamados.controller.dto.*;
+import com.rpa.chamados.domain.model.enums.UserRole;
+import com.rpa.chamados.security.annotations.RequiresRole;
 import com.rpa.chamados.service.RequestService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,7 @@ public class RequestControllerImpl {
     }
 
     @PostMapping(path = "/melhoria", consumes = "multipart/form-data")
+    @RequiresRole({UserRole.DEFAULT, UserRole.ANALYST, UserRole.DEVELOP, UserRole.ADMIN})
     public ResponseEntity<SubmissionResponseDto> createMelhoriaRequest(
             @RequestPart("request") CreateMelhoriaRequest request,
             @RequestPart(value = "documentacaoFiles", required = false) List<MultipartFile> documentacaoFiles,
@@ -44,6 +47,7 @@ public class RequestControllerImpl {
     }
 
     @PostMapping(path="/sustentacao",consumes = "multipart/form-data")
+    @RequiresRole({UserRole.DEFAULT, UserRole.ANALYST, UserRole.DEVELOP, UserRole.ADMIN})
     public ResponseEntity<SubmissionResponseDto> createSustentacaoRequest(
             @RequestPart("request") CreateSustentacaoRequest request,
             @RequestPart(value = "documentacaoFiles", required = false) List<MultipartFile> documentacaoFiles,
@@ -61,6 +65,7 @@ public class RequestControllerImpl {
     }
 
     @PostMapping("/novo-projeto")
+    @RequiresRole({UserRole.DEFAULT, UserRole.ANALYST, UserRole.DEVELOP, UserRole.ADMIN})
     public ResponseEntity<SubmissionResponseDto> createNovoProjetoRequest(
             @RequestPart("request") CreateNovoProjetoRequest request,
             @RequestHeader("Authorization") String authHeader
@@ -74,18 +79,21 @@ public class RequestControllerImpl {
     }
 
     @GetMapping
+    @RequiresRole({UserRole.ANALYST, UserRole.DEVELOP, UserRole.ADMIN})
     public ResponseEntity<List<RequestDto>> getAllCalls() {
         List<RequestDto> calls = service.getAllCalls();
         return ResponseEntity.ok(calls);
     }
 
     @GetMapping("/{id}")
+    @RequiresRole({UserRole.ANALYST, UserRole.DEVELOP, UserRole.ADMIN})
     public ResponseEntity<RequestDto> getCallById(@PathVariable String id) {
         RequestDto call = service.getCallById(id);
         return ResponseEntity.ok(call);
     }
     
     @PutMapping("/{id}")
+    @RequiresRole({UserRole.ANALYST, UserRole.DEVELOP, UserRole.ADMIN})
     public ResponseEntity<RequestDto> updateCall(
             @PathVariable String id,
             @Valid @RequestBody UpdateRequest request
@@ -109,18 +117,21 @@ public class RequestControllerImpl {
     }
 
     @GetMapping("/stats")
+    @RequiresRole({UserRole.ANALYST, UserRole.DEVELOP, UserRole.ADMIN})
     public ResponseEntity<CallStatsDto> getCallStats() {
         CallStatsDto stats = service.getCallStats();
         return ResponseEntity.ok(stats);
     }
 
     @GetMapping("/dashboard")
+    @RequiresRole({UserRole.ANALYST, UserRole.DEVELOP, UserRole.ADMIN})
     public ResponseEntity<DashboardDataDto> getDashboardData() {
         DashboardDataDto dashboardData = service.getDashboardData();
         return ResponseEntity.ok(dashboardData);
     }
 
     @GetMapping("/search")
+    @RequiresRole({UserRole.ANALYST, UserRole.DEVELOP, UserRole.ADMIN})
     public ResponseEntity<Map<String, Object>> searchCalls(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String serviceType,
@@ -150,36 +161,42 @@ public class RequestControllerImpl {
     }
 
     @DeleteMapping("/{id}")
+    @RequiresRole(UserRole.ADMIN)
     public ResponseEntity<Void> deleteCall(@PathVariable String id) {
         service.deleteCall(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/user/{userId}")
+    @RequiresRole({UserRole.ANALYST, UserRole.DEVELOP, UserRole.ADMIN})
     public ResponseEntity<List<RequestDto>> getCallsByUser(@PathVariable String userId) {
         List<RequestDto> calls = service.getCallsByUser(userId);
         return ResponseEntity.ok(calls);
     }
 
     @GetMapping("/stats/departments")
+    @RequiresRole({UserRole.ANALYST, UserRole.DEVELOP, UserRole.ADMIN})
     public ResponseEntity<Map<String, Long>> getDepartmentStats() {
         Map<String, Long> stats = service.getDepartmentStats();
         return ResponseEntity.ok(stats);
     }
 
     @GetMapping("/stats/technologies")
+    @RequiresRole({UserRole.ANALYST, UserRole.DEVELOP, UserRole.ADMIN})
     public ResponseEntity<Map<String, Long>> getTechnologyStats() {
         Map<String, Long> stats = service.getTechnologyStats();
         return ResponseEntity.ok(stats);
     }
 
     @GetMapping("/stats/users")
+    @RequiresRole({UserRole.ANALYST, UserRole.DEVELOP, UserRole.ADMIN})
     public ResponseEntity<List<UserTicketMetricsDto>> getUserTicketMetrics() {
         List<UserTicketMetricsDto> metrics = service.getUserTicketMetrics();
         return ResponseEntity.ok(metrics);
     }
 
     @GetMapping("/stats/timeline")
+    @RequiresRole({UserRole.ANALYST, UserRole.DEVELOP, UserRole.ADMIN})
     public ResponseEntity<List<TimelineStatsDto>> getTimelineStats(
             @RequestParam(defaultValue = "8") int weeks
     ) {

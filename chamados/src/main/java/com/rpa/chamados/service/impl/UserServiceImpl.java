@@ -2,9 +2,9 @@ package com.rpa.chamados.service.impl;
 
 import com.rpa.chamados.controller.dto.DepartmentStatDto;
 import com.rpa.chamados.controller.dto.SubmitterInfoDto;
-import com.rpa.chamados.domain.model.SubmitterInfo;
+import com.rpa.chamados.domain.model.User;
 import com.rpa.chamados.exception.UserNotFoundException;
-import com.rpa.chamados.repository.SubmitterInfoRepository;
+import com.rpa.chamados.repository.UserRepository;
 import com.rpa.chamados.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    private final SubmitterInfoRepository repository;
+    private final UserRepository repository;
 
-    public UserServiceImpl(SubmitterInfoRepository repository) {
+    public UserServiceImpl(UserRepository repository) {
         this.repository = repository;
     }
 
@@ -35,14 +35,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public SubmitterInfoDto getFormRespondentById(String id) {
-        SubmitterInfo submitter = repository.findById(UUID.fromString(id))
+        User submitter = repository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new UserNotFoundException("Submitter not found with id: " + id));
         return mapToDto(submitter);
     }
 
     @Override
     public SubmitterInfoDto getFormRespondentByEmail(String email) {
-        SubmitterInfo submitter = repository.findByEmail(email)
+        User submitter = repository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("Submitter not found with email: " + email));
         return mapToDto(submitter);
     }
@@ -80,11 +80,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public SubmitterInfoDto updateUserActiveStatus(String id, Boolean isActive) {
-        SubmitterInfo submitter = repository.findById(UUID.fromString(id))
+        User submitter = repository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new UserNotFoundException("Submitter not found with id: " + id));
         
         submitter.setIsActive(isActive);
-        SubmitterInfo updated = repository.save(submitter);
+        User updated = repository.save(submitter);
         
         return mapToDto(updated);
     }
@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
         
         return departments.stream()
                 .map(dept -> {
-                    List<SubmitterInfo> deptUsers = repository.findByDepartment(dept);
+                    List<User> deptUsers = repository.findByDepartment(dept);
                     Map<String, Object> analytics = new HashMap<>();
                     analytics.put("department", dept);
                     analytics.put("totalUsers", deptUsers.size());
@@ -114,10 +114,10 @@ public class UserServiceImpl implements UserService {
         }
 
         // Try to find existing submitter by email
-        Optional<SubmitterInfo> existing = repository.findByEmail(submitterDto.email());
+        Optional<User> existing = repository.findByEmail(submitterDto.email());
         
         if (existing.isPresent()) {
-            SubmitterInfo submitter = existing.get();
+            User submitter = existing.get();
             // Update information if needed
             submitter.setName(submitterDto.name());
             submitter.setPhone(submitterDto.phone());
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
             
             return mapToDto(repository.save(submitter));
         } else {
-            SubmitterInfo newSubmitter = getSubmitterInfo(submitterDto);
+            User newSubmitter = getSubmitterInfo(submitterDto);
 
             return mapToDto(repository.save(newSubmitter));
         }
@@ -153,8 +153,8 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    private SubmitterInfo getSubmitterInfo(SubmitterInfoDto submitterDto) {
-        SubmitterInfo newSubmitter = new SubmitterInfo();
+    private User getSubmitterInfo(SubmitterInfoDto submitterDto) {
+        User newSubmitter = new User();
         newSubmitter.setName(submitterDto.name());
         newSubmitter.setEmail(submitterDto.email());
         newSubmitter.setPhone(submitterDto.phone());
@@ -166,7 +166,7 @@ public class UserServiceImpl implements UserService {
         return newSubmitter;
     }
 
-    private SubmitterInfoDto mapToDto(SubmitterInfo entity) {
+    private SubmitterInfoDto mapToDto(User entity) {
         return new SubmitterInfoDto(
             entity.getId().toString(),
             entity.getName(),

@@ -1,11 +1,11 @@
-INSERT INTO clients (name) VALUES
-('Cliente'),
-('Necxt'),
-('Stefanini'),
-('Ponto Certificado'),
-('Stefanini NetWorking'),
-('N1IT'),
-('Vallourec');
+INSERT INTO clients (name, created_at) VALUES
+('Cliente', NOW()),
+('Necxt', NOW()),
+('Stefanini', NOW()),
+('Ponto Certificado', NOW()),
+('Stefanini NetWorking', NOW()),
+('N1IT', NOW()),
+('Vallourec', NOW());
 
 INSERT INTO projects (name, description, area, client_id) VALUES
 ('Abacus', 'Verificar', 'INTERN', 2),
@@ -83,7 +83,7 @@ INSERT INTO projects (name, description, area, client_id) VALUES
 ('ANVISA', 'Verificar', 'EXTERNAL', 2),
 ('PDA', 'Verificar', 'INTERN', 2);
 
-INSERT INTO submitter_info (
+INSERT INTO users (
     id,
     name,
     email,
@@ -110,7 +110,7 @@ INSERT INTO submitter_info (
 );
 
 INSERT INTO requests (
-    id, type, description, submitted_by, celula, submitter_info_id,
+    id, type, description, submitted_by, celula, user_id,
     robot, tecnologia_automacao, empresa, ja_sustentada, tem_documentacao, id_cliente,
     nome_cliente, id_servico, nome_servico, usuario_automacao, servidor_automacao,
     created_at, updated_at
@@ -207,7 +207,7 @@ RANDOM_UUID(),
 );
 
 INSERT INTO requests (
-    id, type, description, submitted_by, celula, submitter_info_id,
+    id, type, description, submitted_by, celula, user_id,
     robot, tecnologia_automacao, empresa, roi, cliente, servico, area_negocio,
     nome_processo, frequencia_execucao, sazonalidade, volumetria, duracao_cada_caso,
     quantas_pessoas_trabalham, fonte_dados_entrada, usamfa, existe_captcha,
@@ -477,7 +477,7 @@ INSERT INTO requests (
 );
 
 -- Inserindo analistas e pontos focais adicionais
-INSERT INTO submitter_info (
+INSERT INTO users (
     id,
     name,
     email,
@@ -497,7 +497,7 @@ INSERT INTO submitter_info (
     '(11) 99999-1111',
     'CEL 504 | STEFANINI CONSULTORIA',
     'STEFANINI CONSULTORIA',
-    'Analista',
+    'ANALYST',
     TRUE,
     0,
     NULL,
@@ -510,7 +510,7 @@ INSERT INTO submitter_info (
     '(11) 99999-2222',
     'CEL 411 | STEFANINI CONSULTORIA',
     'STEFANINI CONSULTORIA',
-    'Analista',
+    'ANALYST',
     TRUE,
     0,
     NULL,
@@ -518,57 +518,58 @@ INSERT INTO submitter_info (
 );
 
 -- Inserindo demandas de exemplo
-INSERT INTO demands (
-    name,
-    doc_hours,
-    dev_hours,
-    type,
-    description,
-    focal_point_id,
-    analyst_id,
-    service_id,
-    client_id,
-    status,
-    opened_at,
-    start_at,
-    ends_at,
-    created_at,
-    roi
-) VALUES
-(
-    'Automação de Processo de Faturamento',
-    8.0,
-    40.0,
-    'NOVO_PROJETO',
-    'Desenvolvimento de RPA para automatizar o processo de geração de faturas mensais',
-    '3f5d5b9a-2a6c-4d8e-8e2b-74a946e6f5f7',
-    '4a8d6c2e-3b7c-4e9f-9f3c-85b957f6e8a9',
-    101,
-    201,
-    'BACKLOG',
-    CURRENT_DATE,
-    DATEADD('DAY', 7, CURRENT_DATE),
-    DATEADD('DAY', 30, CURRENT_DATE),
-    NOW(),
-    'ROI estimado de 30% em 12 meses'
-),
-(
-    'Melhoria no Sistema de Aprovação',
-    4.0,
-    16.0,
-    'MELHORIA',
-    'Otimização do workflow de aprovação de documentos',
-    '3f5d5b9a-2a6c-4d8e-8e2b-74a946e6f5f7',
-    '5b9e7d3f-4c8d-5f0e-0e4d-96c068e7a0f1',
-    102,
-    202,
-    'ASSESSMENT',
-    DATEADD('DAY', -5, CURRENT_DATE),
-    CURRENT_DATE,
-    DATEADD('DAY', 15, CURRENT_DATE),
-    DATEADD('DAY', -5, NOW()),
-    'ROI estimado de 25% em 6 meses'
-);
+--INSERT INTO demands (
+--    name,
+--    doc_hours,
+--    dev_hours,
+--    type,
+--    description,
+--    focal_point_id,
+--    analyst_id,
+--    cell,
+--    service,
+--    client,
+--    status,
+--    opened_at,
+--    start_at,
+--    ends_at,
+--    created_at,
+--    roi
+--) VALUES
+--(
+--    'Automação de Processo de Faturamento',
+--    8.0,
+--    40.0,
+--    'NOVO_PROJETO',
+--    'Desenvolvimento de RPA para automatizar o processo de geração de faturas mensais',
+--    '3f5d5b9a-2a6c-4d8e-8e2b-74a946e6f5f7',
+--    '4a8d6c2e-3b7c-4e9f-9f3c-85b957f6e8a9',
+--    101,
+--    201,
+--    'BACKLOG',
+--    CURRENT_DATE,
+--    DATEADD('DAY', 7, CURRENT_DATE),
+--    DATEADD('DAY', 30, CURRENT_DATE),
+--    NOW(),
+--    'ROI estimado de 30% em 12 meses'
+--),
+--(
+--    'Melhoria no Sistema de Aprovação',
+--    4.0,
+--    16.0,
+--    'MELHORIA',
+--    'Otimização do workflow de aprovação de documentos',
+--    '3f5d5b9a-2a6c-4d8e-8e2b-74a946e6f5f7',
+--    '5b9e7d3f-4c8d-5f0e-0e4d-96c068e7a0f1',
+--    102,
+--    202,
+--    'ASSESSMENT',
+--    DATEADD('DAY', -5, CURRENT_DATE),
+--    CURRENT_DATE,
+--    DATEADD('DAY', 15, CURRENT_DATE),
+--    DATEADD('DAY', -5, NOW()),
+--    'ROI estimado de 25% em 6 meses'
+--);
 
 INSERT INTO robots (name, cell, technology, execution_type, client, robot_status) VALUES
 ('Anexar.Despesas.RM', '99', 'UiPath', 'ATTENDED', 'STEFANINI', 'ACTIVE'),

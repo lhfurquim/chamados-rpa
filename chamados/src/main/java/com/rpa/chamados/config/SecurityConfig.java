@@ -4,6 +4,8 @@ import com.rpa.chamados.security.JwtAuthenticationEntryPoint;
 import com.rpa.chamados.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,6 +21,8 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
+@EnableAspectJAutoProxy
 public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -45,7 +49,8 @@ public class SecurityConfig {
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                     "/swagger-resources/**",
-                    "/webjars/**"
+                    "/webjars/**",
+                    "/v1/api/clients/**" // remover depois
                 ).permitAll()
                 .anyRequest().authenticated()
             )

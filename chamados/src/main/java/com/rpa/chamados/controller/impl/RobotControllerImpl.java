@@ -7,6 +7,8 @@ import com.rpa.chamados.domain.model.Robot;
 import com.rpa.chamados.domain.model.enums.Client;
 import com.rpa.chamados.domain.model.enums.ExecutionType;
 import com.rpa.chamados.domain.model.enums.RobotStatus;
+import com.rpa.chamados.domain.model.enums.UserRole;
+import com.rpa.chamados.security.annotations.RequiresRole;
 import com.rpa.chamados.service.RobotService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,7 @@ public class RobotControllerImpl {
     }
 
     @PostMapping
+    @RequiresRole(UserRole.ADMIN)
     public ResponseEntity<RobotDto> createRobot(
             @RequestBody @Valid CreateRobotRequest request
     ) {
@@ -36,6 +39,7 @@ public class RobotControllerImpl {
     }
 
     @PutMapping
+    @RequiresRole(UserRole.ADMIN)
     public ResponseEntity<RobotDto> updateRobot(
             @RequestBody @Valid UpdateRobotRequest request
     ) {
@@ -88,6 +92,7 @@ public class RobotControllerImpl {
     }
 
     @DeleteMapping("{id}")
+    @RequiresRole(UserRole.ADMIN)
     public ResponseEntity<Void> delete(
             @PathVariable Long id
     ) {

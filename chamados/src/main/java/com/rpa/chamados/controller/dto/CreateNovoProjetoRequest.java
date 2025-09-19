@@ -1,6 +1,6 @@
 package com.rpa.chamados.controller.dto;
 
-import com.rpa.chamados.domain.model.SubmitterInfo;
+import com.rpa.chamados.domain.model.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -13,7 +13,7 @@ public record CreateNovoProjetoRequest(
         String submittedBy,
 
         @NotNull
-        SubmitterInfo submitterInfo,
+        User user,
 
         @NotBlank
         String roi,

@@ -306,3 +306,162 @@ export interface TimelineStats {
   totalRequests: number;
   byServiceType: Record<string, number>;
 }
+
+// Client Management Types
+export interface Client {
+  id: number;
+  name: string;
+  createdAt: string;
+}
+
+export interface CreateClientRequest {
+  name: string;
+}
+
+export interface UpdateClientRequest {
+  id: number;
+  name?: string;
+}
+
+export interface ClientFilters {
+  search?: string;
+}
+
+// Project Management Types
+export type Area = 'INTERN' | 'EXTERNAL';
+
+export interface Project {
+  id: number;
+  name: string;
+  description: string;
+  area: Area;
+  client: Client;
+}
+
+export interface CreateProjectRequest {
+  name: string;
+  description: string;
+  area: Area;
+  clientId: number;
+}
+
+export interface UpdateProjectRequest {
+  id: number;
+  name: string;
+  description: string;
+  area: Area;
+  clientId: number;
+}
+
+export interface ProjectFilters {
+  search?: string;
+  area?: Area;
+  clientId?: number;
+}
+
+export interface GetAllProjectsResponse {
+  projects: Project[];
+}
+
+// Demand Management Types
+export type DemandStatus =
+  | 'BACKLOG'
+  | 'ASSESSMENT'
+  | 'COST_APPROVAL'
+  | 'DEVELOPING'
+  | 'DEPLOYING'
+  | 'CLIENT_APPROVAL'
+  | 'COMPLETED'
+  | 'BLOCKED'
+  | 'CANCELED';
+
+export interface SubmitterInfo {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  department: string;
+  company: string;
+  role?: string;
+  isActive: boolean;
+  requestsSubmitted?: number;
+  lastActivity?: string;
+  joinedAt?: string;
+}
+
+export interface Demand {
+  id: number;
+  name: string;
+  docHours: number;
+  devHours: number;
+  type: ServiceType;
+  description: string;
+  focalPoint: SubmitterInfo;
+  analyst: SubmitterInfo;
+  project: Project;
+  status: DemandStatus;
+  robot: Robot;
+  client: number;
+  service: number;
+  openedAt?: string;
+  startAt?: string;
+  endsAt?: string;
+  endedAt?: string;
+  createdAt: string;
+  roi?: string;
+}
+
+export interface CreateDemandRequest {
+  name: string;
+  docHours: number;
+  devHours: number;
+  type: ServiceType;
+  description: string;
+  focalPointId: string; // UUID
+  analystId: string; // UUID
+  projectId: number;
+  status: DemandStatus;
+  robotId: number;
+  client?: number;
+  service?: number;
+  openedAt?: string;
+  startAt?: string;
+  endsAt?: string;
+  roi?: string;
+}
+
+export interface UpdateDemandRequest {
+  id: number;
+  name: string;
+  docHours: number;
+  devHours: number;
+  type: ServiceType;
+  description: string;
+  focalPointId: string; // UUID
+  analystId: string; // UUID
+  projectId: number;
+  status: DemandStatus;
+  robotId: number;
+  client?: number;
+  service?: number;
+  openedAt?: string;
+  startAt?: string;
+  endsAt?: string;
+  endedAt?: string;
+  roi?: string;
+}
+
+export interface DemandFilters {
+  search?: string;
+  status?: DemandStatus;
+  type?: ServiceType;
+  projectId?: number;
+  robotId?: number;
+  focalPointId?: string;
+  analystId?: string;
+  clientId?: number;
+}
+
+export interface GetAllDemandsResponse {
+  demands: Demand[];
+}

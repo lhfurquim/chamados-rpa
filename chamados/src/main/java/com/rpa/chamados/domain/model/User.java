@@ -1,5 +1,6 @@
 package com.rpa.chamados.domain.model;
 
+import com.rpa.chamados.domain.model.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,9 +12,9 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "submitter_info")
+@Table(name = "users")
 @Entity
-public class SubmitterInfo {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -36,8 +37,14 @@ public class SubmitterInfo {
     @Column(nullable = false)
     private String role = "Usuário";
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_role")
+    private UserRole userRole = UserRole.DEFAULT;
+
     @Column(nullable = false)
     private Boolean isActive = true;
+
+    private String avatarUrl;
 
     @Column(nullable = false)
     private Integer requestsSubmitted = 0;

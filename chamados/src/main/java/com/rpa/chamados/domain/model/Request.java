@@ -21,11 +21,11 @@ public abstract class Request {
     public Request() {
     }
 
-    public Request(String description, String submittedBy, String celula, SubmitterInfo submitterInfo) {
+    public Request(String description, String submittedBy, String celula, User user) {
         this.description = description;
         this.submittedBy = submittedBy;
         this.celula = celula;
-        this.submitterInfo = submitterInfo;
+        this.user = user;
     }
 
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -40,8 +40,8 @@ public abstract class Request {
     private String celula;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "submitter_info_id")
-    private SubmitterInfo submitterInfo;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

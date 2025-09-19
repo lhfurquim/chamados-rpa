@@ -31,10 +31,10 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
     
     List<Request> findByTecnologiaAutomacao(String tecnologiaAutomacao);
     
-    @Query("SELECT r FROM Request r WHERE r.submitterInfo.department = :department")
+    @Query("SELECT r FROM Request r WHERE r.user.department = :department")
     List<Request> findByDepartment(@Param("department") String department);
     
-    @Query("SELECT r FROM Request r WHERE r.submitterInfo.company = :company")
+    @Query("SELECT r FROM Request r WHERE r.user.company = :company")
     List<Request> findByCompany(@Param("company") String company);
     
     @Query("SELECT r FROM Request r WHERE r.createdAt >= :dateFrom AND r.createdAt <= :dateTo")
@@ -49,7 +49,7 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
     @Query("SELECT DISTINCT r.tecnologiaAutomacao FROM Request r WHERE r.tecnologiaAutomacao IS NOT NULL")
     List<String> findDistinctTechnologies();
     
-    @Query("SELECT DISTINCT r.submitterInfo.department FROM Request r")
+    @Query("SELECT DISTINCT r.user.department FROM Request r")
     List<String> findDistinctDepartments();
     
     @Query("SELECT r FROM Request r WHERE " +
@@ -57,13 +57,13 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
            "LOWER(r.robot) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
            "LOWER(r.tecnologiaAutomacao) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
            "LOWER(r.empresa) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           "LOWER(r.submitterInfo.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           "LOWER(r.submitterInfo.department) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
+           "LOWER(r.user.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           "LOWER(r.user.department) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
            "(:serviceType IS NULL OR " +
            "((:serviceType = 'MELHORIA' AND TYPE(r) = MelhoriaRequest) OR " +
            "(:serviceType = 'SUSTENTACAO' AND TYPE(r) = SustentacaoRequest) OR " +
            "(:serviceType = 'NOVO_PROJETO' AND TYPE(r) = NovoProjetoRequest))) AND " +
-           "(:department IS NULL OR r.submitterInfo.department = :department) AND " +
+           "(:department IS NULL OR r.user.department = :department) AND " +
            "(:technology IS NULL OR r.tecnologiaAutomacao = :technology)")
     Page<Request> searchRequests(@Param("search") String search,
                                 @Param("serviceType") String serviceType,

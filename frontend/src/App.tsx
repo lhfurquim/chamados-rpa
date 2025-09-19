@@ -8,10 +8,13 @@ import DashboardHome from './pages/dashboard/DashboardHome';
 import CallsPage from './pages/dashboard/CallsPage';
 import AnalyticsPage from './pages/dashboard/AnalyticsPage';
 import RobotsPage from './pages/dashboard/RobotsPage';
+import HoursPage from './pages/dashboard/HoursPage';
 import { Toaster } from './components/ui/toaster';
 import { testApiEndpoints } from './utils/apiTester';
 import { MsalProvider } from "@azure/msal-react";
 import { msalInstance } from "./auth/sso";
+import { ThemeProvider } from "./components/ThemeProvider"
+
 import TestePage from './pages/teste-page';
 
 function App() {
@@ -26,7 +29,8 @@ function App() {
 
   return (
     <Router>
-      <MsalProvider instance={msalInstance}>
+      <ThemeProvider>
+        <MsalProvider instance={msalInstance}>
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Navigate to="/form" replace />} />
@@ -45,6 +49,7 @@ function App() {
               <Route path="calls" element={<CallsPage />} />
               <Route path="analytics" element={<AnalyticsPage />} />
               <Route path="robots" element={<RobotsPage />} />
+              <Route path="hours/*" element={<HoursPage />} />
               <Route path="users" element={<div className="p-6"><h1 className="text-2xl font-bold">Usuários</h1><p>Página em desenvolvimento...</p></div>} />
               <Route path="settings" element={<div className="p-6"><h1 className="text-2xl font-bold">Configurações</h1><p>Página em desenvolvimento...</p></div>} />
               <Route
@@ -59,7 +64,8 @@ function App() {
           </Routes>
           <Toaster />
         </AuthProvider>
-      </MsalProvider>
+       </MsalProvider>
+      </ThemeProvider>
     </Router>
   );
 }

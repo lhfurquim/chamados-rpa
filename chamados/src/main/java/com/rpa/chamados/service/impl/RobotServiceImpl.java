@@ -146,6 +146,7 @@ public class RobotServiceImpl implements RobotService {
 
     private RobotDto mapToDto(Robot robot) {
         return new RobotDto(
+                robot.getId(),
                 robot.getName(),
                 robot.getCell(),
                 robot.getTechnology(),

@@ -23,7 +23,7 @@ const TECHNOLOGY_OPTIONS: readonly string[] = [
   'UiPath',
   'Blue Prism',
   'Automation Anywhere',
-  'Power Automate',
+  'Power Automate Desktop',
   'Python',
   'JavaScript',
   'Outras'

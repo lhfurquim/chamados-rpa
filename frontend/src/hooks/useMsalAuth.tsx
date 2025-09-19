@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useMsal } from '@azure/msal-react';
 import { InteractionRequiredAuthError, InteractionStatus, type AccountInfo } from '@azure/msal-browser';
 import { loginRequest } from '../auth/sso';
-import { createUserFromSSO } from '../services/authService';
+import { createUserFromSSO, initializeTokenManager } from '../services/authService';
 import { isAdminUser } from '../config/adminUsers';
 import type { FormRespondent } from '../types';
 import { getUserProfile, type GraphUserProfile } from '../lib/graph-api';
@@ -51,6 +51,21 @@ export function useMsalAuth() {
   const isAuthenticated = accounts.length > 0;
   const account = accounts[0] || null;
 
+  // Initialize TokenManager with MSAL fallback
+  useEffect(() => {
+    if (account) {
+      const msalFallback = async () => {
+        return await acquireAccessToken(account);
+      };
+
+      try {
+        initializeTokenManager(msalFallback);
+      } catch (error) {
+        console.error('Failed to initialize TokenManager:', error);
+      }
+    }
+  }, [account]);
+
   const acquireAccessToken = async (account: AccountInfo): Promise<string | null> => {
     const request = {
       ...loginRequest,
@@ -94,7 +109,18 @@ export function useMsalAuth() {
         throw new Error('Failed to acquire access token');
       }
 
-      localStorage.setItem('auth_token', accessToken);
+      // Store token in TokenManager
+      try {
+        const { getTokenManager } = await import('../lib/tokenManager');
+        const tokenManager = getTokenManager();
+        tokenManager.setToken(accessToken, {
+          tokenType: 'msal',
+          expiresIn: 3600 // Default 1 hour for MSAL tokens
+        });
+      } catch (error) {
+        console.warn('TokenManager not available, using localStorage fallback');
+        localStorage.setItem('auth_token', accessToken);
+      }
 
       let graphData: GraphUserProfile;
 
@@ -283,9 +309,17 @@ export function useMsalAuth() {
       setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
       await instance.logoutPopup();
 
-      // Clear stored data
-      localStorage.removeItem('rpa_user');
-      localStorage.removeItem('auth_token');
+      // Clear TokenManager
+      try {
+        const { getTokenManager } = await import('../lib/tokenManager');
+        const tokenManager = getTokenManager();
+        tokenManager.clearToken();
+      } catch (error) {
+        console.warn('TokenManager not available, clearing localStorage directly');
+        localStorage.removeItem('rpa_user');
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('rpa_token_info');
+      }
 
       setAuthState({
         user: null,
@@ -314,8 +348,16 @@ export function useMsalAuth() {
       if (isAuthenticated && account) {
         await checkRegistrationAndGetProfile(account);
       } else {
-        localStorage.removeItem('rpa_user');
-        localStorage.removeItem('auth_token');
+        // Clear TokenManager when not authenticated
+        try {
+          const { getTokenManager } = await import('../lib/tokenManager');
+          const tokenManager = getTokenManager();
+          tokenManager.clearToken();
+        } catch (error) {
+          localStorage.removeItem('rpa_user');
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('rpa_token_info');
+        }
 
         setAuthState({
           user: null,

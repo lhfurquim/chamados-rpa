@@ -1,11 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { 
-  BarChart3, 
-  LogOut, 
+import {
+  BarChart3,
   Home,
   Phone,
-  Bot
+  Bot,
+  Clock
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import {
@@ -19,6 +19,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from './ui/sidebar';
+import { NavUser } from './NavUser';
 
 const navigation = [
   {
@@ -40,6 +41,12 @@ const navigation = [
     name: 'Robôs',
     href: '/dashboard/robots',
     icon: Bot,
+    adminOnly: true,
+  },
+  {
+    name: 'Horas',
+    href: '/dashboard/hours',
+    icon: Clock,
     adminOnly: true,
   },
 ];
@@ -93,30 +100,7 @@ export default function AppSidebar() {
       </SidebarContent>
       
       <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton tooltip={`${user?.name} (${user?.role})`}>
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-sidebar-accent flex-shrink-0">
-                <span className="text-xs font-medium text-sidebar-accent-foreground">
-                  {user?.name?.charAt(0).toUpperCase()}
-                </span>
-              </div>
-              <div className="flex flex-col min-w-0">
-                <span className="text-sm font-medium truncate">{user?.name}</span>
-                <span className="text-xs text-sidebar-foreground/70 capitalize">{user?.role}</span>
-              </div>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              onClick={logout}
-              tooltip="Sair"
-            >
-              <LogOut className="h-4 w-4" />
-              <span>Sair</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <NavUser onLogout={logout} avatar={''} email={user?.email} name={user?.name} />
       </SidebarFooter>
     </Sidebar>
   );

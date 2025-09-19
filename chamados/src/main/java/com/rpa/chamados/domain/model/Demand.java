@@ -35,22 +35,26 @@ public class Demand {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "focal_point_id")
-    private SubmitterInfo focalPoint;
+    private User focalPoint;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "analyst_id")
-    private SubmitterInfo analyst;
+    private User analyst;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project project;
 
-    private Long serviceId;
-
-    private Long clientId;
-
     @Enumerated(EnumType.STRING)
     private DemandStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "demand_id")
+    private Robot robot;
+
+    private Long client;
+
+    private Long service;
 
     private LocalDate openedAt;
 
